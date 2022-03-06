@@ -1,0 +1,34 @@
+// register
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "name": "Anugrah Ilhami Rizki",
+    "birthDate": "28/05/2002",
+    "username": "Anugrah",
+    "email": "anugrahilhamirizki@gmail.com",
+    "password": "password123",
+    "premium": "True"
+}
+
+###
+
+// list daftar user
+GET  http://localhost:3000/users
+
+###
+
+// login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "anugrahilhamirizki@gmail.com",
+    "password": "password123"
+}
+
+###
+
+// request konten
+GET http://localhost:3000/contents
+Authorization: Bearer 
