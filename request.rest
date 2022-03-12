@@ -1,25 +1,24 @@
 // register
-POST http://localhost:3000/register
+POST http://localhost:5000/register
 Content-Type: application/json
 
 {
-    "name": "Anugrah Ilhami Rizki",
-    "birthDate": "28/05/2002",
-    "username": "Anugrah",
     "email": "anugrahilhamirizki@gmail.com",
     "password": "password123",
-    "premium": "True"
+    "firstName": "Anugrah",
+    "lastName": "Ilhami Rizki",
+    "birthDate": "28/05/2002"
 }
 
 ###
 
 // list daftar user
-GET  http://localhost:3000/users
+GET  http://localhost:5000/users
 
 ###
 
 // login
-POST http://localhost:3000/login
+POST http://localhost:5000/login
 Content-Type: application/json
 
 {
@@ -30,5 +29,18 @@ Content-Type: application/json
 ###
 
 // request konten
-GET http://localhost:3000/contents
-Authorization: Bearer 
+GET http://localhost:5000/contents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFudWdyYWhpbGhhbWlyaXpraUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRMQXRaR1AzeVF6clB0a1ZEcUk1dGNPSU9UMTBoQklBeXRMY2dkeW95ZS5BY2lYdU9tL29WaSIsImZpcnN0TmFtZSI6IkFudWdyYWgiLCJsYXN0TmFtZSI6IklsaGFtaSBSaXpraSIsImJpcnRoRGF0ZSI6IjI4LzA1LzIwMDIiLCJpYXQiOjE2NDcxMTEzNzN9.GUXaqr7a_ThzDn4ZK-EluFeu3fcTfRnyhRGVnXV1W9w
+
+###
+
+// hitung kalori
+POST http://localhost:5000/kalori
+Content-Type: application/json
+
+{
+    "nasi": "2",
+    "ayam": "1",
+    "tahu": "1",
+    "tempe": "3"
+}

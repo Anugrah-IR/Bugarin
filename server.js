@@ -1,35 +1,45 @@
-require('dotenv').config()
+require("dotenv").config()
 
-const express = require('express')
+const express = require("express")
 const app = express()
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const { request } = require("express")
+const mysql = require("mysql")
+const res = require("express/lib/response")
 
 app.use(express.json())
 
-const users = []
+const users = [];
 
 const contents = [
     {
-        username: 'Anugrah',
-        content: 'Ini adalah konten spesifik untuk user Anugrah'
+        firstName: "Anugrah",
+        content: "Ini adalah konten spesifik untuk user Anugrah"
     },
     {
-        username: 'Alvin',
-        content: 'Ini adalah konten spesifik untuk user Alvin'
+        firstName: "Alvin",
+        content: "Ini adalah konten spesifik untuk user Alvin"
     }
 ]
 
-app.post('/register', async (req, res) => {
+const db = mysql.createConnection ({
+    user: "root",
+    host: "localhost",
+    password: "",
+    database: "kalori_makanan"
+})
+
+// register
+app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         const user = {
-            name: req.body.name,
-            birthDate: req.body.birthDate,
-            username: req.body.username,
             email: req.body.email,
             password: hashedPassword,
-            premium: req.body.premium
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            birthDate: req.body.birthDate
         }
         users.push(user)
         res.status(200).send({
@@ -44,11 +54,13 @@ app.post('/register', async (req, res) => {
     }
 })
 
-app.get('/users', (req, res) => {
+// list daftar user
+app.get("/users", (req, res) => {
     res.json(users)
 })
 
-app.post('/login', async (req, res) => {
+// login
+app.post("/login", async (req, res) => {
     const user = users.find(user => user.email = req.body.email)
     if (user == null) {
         return res.status(404).send('Email tersebut tidak terdaftar')
@@ -77,10 +89,37 @@ app.post('/login', async (req, res) => {
     
 })
 
-app.get('/contents', authencticateToken, (req, res) => {
-    res.json(contents.filter(content => content.username === req.user.username))
+// request content
+app.get("/contents", authencticateToken, (req, res) => {
+    res.json(contents.filter(content => content.firstName === req.user.firstName))
 })
 
+// hitung kalori
+app.post("/kalori", (req,res) => {
+    db.connect(function(err) {
+        if (err) throw err;
+        db.query("SELECT * FROM makanan", function (err, result, fields) {
+          if (err) throw err;
+    
+          Object.keys(result).forEach(function(key) {
+              var nilaiKalori = result[key];
+              var kalori = {
+                  nasi: req.body.nasi * nilaiKalori.nasi,
+                  ayam: req.body.ayam * nilaiKalori.ayam,
+                  tahu: req.body.tahu * nilaiKalori.tahu,
+                  tempe: req.body.tempe * nilaiKalori.tempe,
+              }
+              const sumValues = obj => Object.values(obj).reduce((a, b) => a + b);
+              const jumlahKalori = sumValues(kalori);
+              res.send({
+                  "jumlahKalori": jumlahKalori
+              })
+          });
+        });
+      });
+})
+
+// fungsi untuk memberi token login
 function authencticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -93,4 +132,4 @@ function authencticateToken(req, res, next) {
     })
 }
 
-app.listen(3000)
+app.listen(5000);
